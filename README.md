@@ -1,107 +1,64 @@
-# 🏆 FIFA World Cup 2026 Predictor
+# FIFA World Cup 2026 — Prediction Model
 
-A hybrid Python/Rust machine learning and Monte Carlo simulation platform designed to forecast outcomes, group standings, and knockout paths for the enlarged 48-team **FIFA World Cup 2026**.
+A 4-layer stacked ensemble (XGBoost / RF / ExtraTrees / LightGBM / MLP → LR + LightGBM → MLP blender → sigmoid
+calibration, blended 70/30 with a competitive-match specialist) that predicts every match of the 48-team
+World Cup, simulates the tournament, and answers **"what if something happens to a team?"**
 
-By leveraging high-performance Rust execution for intensive match simulations alongside Python’s analytical ecosystem for data modeling, this repository provides data-driven tournament insights at scale.
-
----
-
-## 📌 Features
-
-- **Hybrid Architecture**: Blends data preprocessing and visualization in Python (`Jupyter Notebook`) with a blazing-fast core engine in Rust (`cargo`).
-- **Monte Carlo Tournament Engine**: Simulates tens of thousands of tournament runs in seconds to calculate probabilistic outcomes (e.g., reaching the Round of 32, Quarter-finals, or winning the final).
-- **Match Event Generation**: Simulates discrete in-game events, goals, and penalty shootouts based on team ratings and custom statistical models.
-- **Automated CI Pipeline**: Continuous Integration configured via GitHub Actions (`.github/workflows/rust.yml`) ensures robust, error-free Rust builds.
-
----
-
-## 📁 Repository Structure
-
-```text
-fifa-wc2026-predictor/
-├── .github/
-│   └── workflows/
-│       └── rust.yml          # CI build and test pipeline
-├── data/
-│   └── README.md             # Data schemas and source documentation
-├── rust/
-│   ├── Cargo.toml            # Rust dependencies & manifest
-│   └── src/
-│       ├── data.rs           # Data loading & team record structures
-│       ├── events.rs         # In-game match event logic
-│       ├── main.rs           # CLI entry point
-│       ├── model.rs          # Probability and prediction models
-│       ├── rng.rs            # Custom fast RNG seeding
-│       └── sim.rs            # Tournament bracket & simulation loop
-├── FIFA_World_Cup_2026.ipynb # Data exploration & model building
-├── requirements.txt          # Python dependencies
-└── README.md                 # Project documentation
+```
+├── FIFA_World_Cup_2026.ipynb   # training, prediction, Monte Carlo, what-if scenarios
+├── data/                       # put the training CSV here (see data/README.md)
+└── rust/                       # dependency-free Rust port of the simulator + team events
 ```
 
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-Ensure you have the following installed on your machine:
-* **Python**: 3.9+ 
-* **Rust & Cargo**: 1.70+ (`rustup`)
-
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/fifa-wc2026-predictor.git
-   cd fifa-wc2026-predictor
-   ```
-
-2. **Set up the Python Environment:**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-
-3. **Build the Rust Simulation Engine:**
-   ```bash
-   cd rust
-   cargo build --release
-   cd ..
-   ```
-
----
-
-## 💻 Usage
-
-### 1. Data Exploration & Modeling (Python)
-Launch the Jupyter Notebook to explore underlying historical data, tune team Elo/expected goal ($xG$) models, and export structured outputs:
+## Python notebook
 
 ```bash
-jupyter notebook FIFA_World_Cup_2026.ipynb
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+jupyter lab FIFA_World_Cup_2026.ipynb
 ```
 
-### 2. High-Speed Tournament Simulation (Rust)
-Run the release-compiled Rust engine to perform thousands of tournament simulations:
+### Team events
 
-```bash
-cd rust
-cargo run --release
+```python
+EVENTS = [
+    TeamEvent('elo_shock', 'France', delta=-100),                    # star player injured
+    TeamEvent('withdraw',  'Iraq', replacement='Italy'),             # swapped for another team
+    TeamEvent('withdraw',  'Brazil', knockout_only=True),            # pulls out before the R32
+]
+compare_scenarios(EVENTS, sims=1000)   # baseline vs scenario, same seed
 ```
 
----
+| Event | Effect |
+|-------|--------|
+| `elo_shock` (± delta) | Team's strength shifts by `delta` Elo points; P(draw) stays fixed. |
+| `withdraw` | Team forfeits every match (3–0 walkovers, so it always finishes last in its group); in the knockouts its opponent advances. |
+| `withdraw` + `replacement` | Another team takes the slot before the group stage. |
+| `knockout_only=True` | Event only applies from the Round of 32. |
 
-## 🧪 Testing
+Events adjust the trained model's probabilities after the fact — no retraining.
 
-To run unit tests across the Rust engine and verify event simulation logic:
+## Rust
 
 ```bash
 cd rust
 cargo test
+cargo run --release -- --sims 20000 --event shock:France:-100 --event withdraw:Iraq=Italy --elo "Italy=1880"
 ```
 
----
+By default the Rust version uses Elo-only probabilities. To use the full ML ensemble, run the last notebook
+cell (writes `wc2026_prob_matrix.csv`) and pass `--probs ../wc2026_prob_matrix.csv`. Run `cargo run -- --help`
+for all options. The ML training itself stays in Python; Rust handles the simulation.
 
-## 📜 License
+## What changed from V11
 
-Distributed under the MIT License. See `LICENSE` for more details.
+- Monte Carlo: the four "250-run" cells each reset the counters, so only 250 runs were reported. Now one cell, 1,000 runs, and model predictions are cached (each pair is predicted once, not thousands of times).
+- Monte Carlo third-place teams were ranked by Elo; now by points / GD / GF like the main bracket. Goal difference now uses real goals.
+- Removed `%pip install`, a duplicate import, the deprecated `use_label_encoder`, the unused `WorldCupMatches.csv` load, and literal `\n` printing in several `print` calls. Broken title cell fixed. Outputs cleared.
+
+## Known limitations (not changed — worth knowing)
+
+- **Validation is in-sample.** The 2023–2025 validation window is inside the training set, so the reported accuracy is optimistic. A time-based holdout would fix this.
+- **Calibration is in-sample.** `FourLayerStack.fit()` does nothing, so the sigmoid calibrators see the stack's own training predictions.
+- **Elo/FIFA rank/xG are current values applied to historical matches**, which leaks present-day strength into the past.
+- Groups, Elo and FIFA ranks are hard-coded; the Round of 32 pairing is simplified rather than FIFA's official bracket.

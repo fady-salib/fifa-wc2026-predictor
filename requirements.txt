@@ -1,0 +1,10 @@
+numpy
+pandas
+scikit-learn
+xgboost
+lightgbm
+requests
+beautifulsoup4
+matplotlib
+tqdm
+jupyter

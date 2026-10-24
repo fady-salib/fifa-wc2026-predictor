@@ -1,0 +1,12 @@
+[package]
+name = "wc2026"
+version = "0.1.0"
+edition = "2021"
+description = "FIFA World Cup 2026 Monte Carlo simulator with team-event what-ifs (Rust port of the notebook)"
+
+# Intentionally no dependencies: std only.
+[dependencies]
+
+[profile.release]
+opt-level = 3
+lto = true
