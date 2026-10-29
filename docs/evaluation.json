@@ -1,0 +1,504 @@
+{
+  "seed": 42,
+  "data_sha256": "efad7b108ac8e19163783ae80540dac3d3ea4f03c6ecbba8732a0b74d59bc903",
+  "features": [
+    "elo_diff",
+    "form_diff",
+    "goal_balance_diff",
+    "rest_days_diff",
+    "h2h_centered"
+  ],
+  "protocol": "rolling one-step-ahead test; earlier test outcomes update history only",
+  "partitions": {
+    "base_train": {
+      "rows": 2618,
+      "matches": 1309,
+      "start": "2018-01-11",
+      "end": "2022-12-18",
+      "class_counts": [
+        973,
+        672,
+        973
+      ]
+    },
+    "stack_validation": {
+      "rows": 548,
+      "matches": 274,
+      "start": "2023-01-25",
+      "end": "2023-11-21",
+      "class_counts": [
+        216,
+        116,
+        216
+      ]
+    },
+    "calibration": {
+      "rows": 392,
+      "matches": 196,
+      "start": "2024-01-13",
+      "end": "2024-11-19",
+      "class_counts": [
+        133,
+        126,
+        133
+      ]
+    },
+    "test": {
+      "rows": 160,
+      "matches": 80,
+      "start": "2025-01-18",
+      "end": "2026-03-31",
+      "class_counts": [
+        57,
+        46,
+        57
+      ]
+    }
+  },
+  "test_metrics": {
+    "elo_only": {
+      "log_loss": 1.0302470317361885,
+      "multiclass_brier_sum": 0.6155925455678956,
+      "accuracy": 0.5375,
+      "top_label_ece": 0.09207324928942014,
+      "calibration_bins": [
+        {
+          "lower": 0.3,
+          "count": 18,
+          "confidence": 0.38906386295161416,
+          "accuracy": 0.5555555555555556
+        },
+        {
+          "lower": 0.4,
+          "count": 80,
+          "confidence": 0.4553566977262304,
+          "accuracy": 0.525
+        },
+        {
+          "lower": 0.5,
+          "count": 44,
+          "confidence": 0.5400970556473423,
+          "accuracy": 0.45454545454545453
+        },
+        {
+          "lower": 0.6,
+          "count": 18,
+          "confidence": 0.6444925117193533,
+          "accuracy": 0.7777777777777778
+        }
+      ],
+      "confusion_matrix": [
+        [
+          43,
+          0,
+          14
+        ],
+        [
+          23,
+          0,
+          23
+        ],
+        [
+          14,
+          0,
+          43
+        ]
+      ],
+      "per_class": {
+        "loss": {
+          "precision": 0.5375,
+          "recall": 0.7543859649122807,
+          "f1": 0.6277372262773723,
+          "support": 57
+        },
+        "draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 46
+        },
+        "win": {
+          "precision": 0.5375,
+          "recall": 0.7543859649122807,
+          "f1": 0.6277372262773723,
+          "support": 57
+        }
+      }
+    },
+    "logistic": {
+      "log_loss": 1.0569752318188095,
+      "multiclass_brier_sum": 0.6318358518961859,
+      "accuracy": 0.4875,
+      "top_label_ece": 0.11510598598676965,
+      "calibration_bins": [
+        {
+          "lower": 0.3,
+          "count": 20,
+          "confidence": 0.378350516404568,
+          "accuracy": 0.3
+        },
+        {
+          "lower": 0.4,
+          "count": 38,
+          "confidence": 0.46230977933567163,
+          "accuracy": 0.5263157894736842
+        },
+        {
+          "lower": 0.5,
+          "count": 38,
+          "confidence": 0.5537345624892095,
+          "accuracy": 0.3684210526315789
+        },
+        {
+          "lower": 0.6,
+          "count": 32,
+          "confidence": 0.6440862528007172,
+          "accuracy": 0.5625
+        },
+        {
+          "lower": 0.7,
+          "count": 24,
+          "confidence": 0.7509138569354956,
+          "accuracy": 0.6666666666666666
+        },
+        {
+          "lower": 0.8,
+          "count": 8,
+          "confidence": 0.8428891267353124,
+          "accuracy": 0.5
+        }
+      ],
+      "confusion_matrix": [
+        [
+          39,
+          0,
+          18
+        ],
+        [
+          23,
+          0,
+          23
+        ],
+        [
+          18,
+          0,
+          39
+        ]
+      ],
+      "per_class": {
+        "loss": {
+          "precision": 0.4875,
+          "recall": 0.6842105263157895,
+          "f1": 0.5693430656934306,
+          "support": 57
+        },
+        "draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 46
+        },
+        "win": {
+          "precision": 0.4875,
+          "recall": 0.6842105263157895,
+          "f1": 0.5693430656934306,
+          "support": 57
+        }
+      }
+    },
+    "random_forest": {
+      "log_loss": 1.136313784565727,
+      "multiclass_brier_sum": 0.685098717286083,
+      "accuracy": 0.50625,
+      "top_label_ece": 0.16384734110216598,
+      "calibration_bins": [
+        {
+          "lower": 0.3,
+          "count": 8,
+          "confidence": 0.3709748490944422,
+          "accuracy": 0.5
+        },
+        {
+          "lower": 0.4,
+          "count": 41,
+          "confidence": 0.45792400063717237,
+          "accuracy": 0.5365853658536586
+        },
+        {
+          "lower": 0.5,
+          "count": 41,
+          "confidence": 0.5524267902509966,
+          "accuracy": 0.6341463414634146
+        },
+        {
+          "lower": 0.6,
+          "count": 47,
+          "confidence": 0.6422516221843341,
+          "accuracy": 0.44680851063829785
+        },
+        {
+          "lower": 0.7,
+          "count": 21,
+          "confidence": 0.7491891721448014,
+          "accuracy": 0.3333333333333333
+        },
+        {
+          "lower": 0.8,
+          "count": 2,
+          "confidence": 0.8444784689062452,
+          "accuracy": 0.5
+        }
+      ],
+      "confusion_matrix": [
+        [
+          39,
+          3,
+          15
+        ],
+        [
+          22,
+          2,
+          22
+        ],
+        [
+          14,
+          3,
+          40
+        ]
+      ],
+      "per_class": {
+        "loss": {
+          "precision": 0.52,
+          "recall": 0.6842105263157895,
+          "f1": 0.5909090909090909,
+          "support": 57
+        },
+        "draw": {
+          "precision": 0.25,
+          "recall": 0.043478260869565216,
+          "f1": 0.07407407407407407,
+          "support": 46
+        },
+        "win": {
+          "precision": 0.5194805194805194,
+          "recall": 0.7017543859649122,
+          "f1": 0.5970149253731343,
+          "support": 57
+        }
+      }
+    },
+    "extra_trees": {
+      "log_loss": 1.0622251190614098,
+      "multiclass_brier_sum": 0.6418329584376957,
+      "accuracy": 0.5,
+      "top_label_ece": 0.0805742729813051,
+      "calibration_bins": [
+        {
+          "lower": 0.3,
+          "count": 15,
+          "confidence": 0.3831283150092801,
+          "accuracy": 0.4666666666666667
+        },
+        {
+          "lower": 0.4,
+          "count": 47,
+          "confidence": 0.4506685573150828,
+          "accuracy": 0.44680851063829785
+        },
+        {
+          "lower": 0.5,
+          "count": 49,
+          "confidence": 0.5404653042805175,
+          "accuracy": 0.5918367346938775
+        },
+        {
+          "lower": 0.6,
+          "count": 45,
+          "confidence": 0.6457416859980274,
+          "accuracy": 0.4888888888888889
+        },
+        {
+          "lower": 0.7,
+          "count": 4,
+          "confidence": 0.7204525620433123,
+          "accuracy": 0.25
+        }
+      ],
+      "confusion_matrix": [
+        [
+          40,
+          0,
+          17
+        ],
+        [
+          22,
+          0,
+          24
+        ],
+        [
+          17,
+          0,
+          40
+        ]
+      ],
+      "per_class": {
+        "loss": {
+          "precision": 0.5063291139240507,
+          "recall": 0.7017543859649122,
+          "f1": 0.5882352941176471,
+          "support": 57
+        },
+        "draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 46
+        },
+        "win": {
+          "precision": 0.49382716049382713,
+          "recall": 0.7017543859649122,
+          "f1": 0.5797101449275363,
+          "support": 57
+        }
+      }
+    },
+    "held_out_stack": {
+      "log_loss": 1.069246400268088,
+      "multiclass_brier_sum": 0.6441642699866522,
+      "accuracy": 0.5,
+      "top_label_ece": 0.11706863125853499,
+      "calibration_bins": [
+        {
+          "lower": 0.3,
+          "count": 4,
+          "confidence": 0.3768436854235344,
+          "accuracy": 0.5
+        },
+        {
+          "lower": 0.4,
+          "count": 30,
+          "confidence": 0.4428766240134756,
+          "accuracy": 0.3333333333333333
+        },
+        {
+          "lower": 0.5,
+          "count": 28,
+          "confidence": 0.5460263593099798,
+          "accuracy": 0.5
+        },
+        {
+          "lower": 0.6,
+          "count": 54,
+          "confidence": 0.6573354579108374,
+          "accuracy": 0.5555555555555556
+        },
+        {
+          "lower": 0.7,
+          "count": 44,
+          "confidence": 0.7310728235179731,
+          "accuracy": 0.5454545454545454
+        }
+      ],
+      "confusion_matrix": [
+        [
+          40,
+          0,
+          17
+        ],
+        [
+          23,
+          0,
+          23
+        ],
+        [
+          17,
+          0,
+          40
+        ]
+      ],
+      "per_class": {
+        "loss": {
+          "precision": 0.5,
+          "recall": 0.7017543859649122,
+          "f1": 0.583941605839416,
+          "support": 57
+        },
+        "draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 46
+        },
+        "win": {
+          "precision": 0.5,
+          "recall": 0.7017543859649122,
+          "f1": 0.583941605839416,
+          "support": 57
+        }
+      }
+    },
+    "sigmoid_stack": {
+      "log_loss": 1.0373853121098404,
+      "multiclass_brier_sum": 0.6251649326625737,
+      "accuracy": 0.5,
+      "top_label_ece": 0.0612478273742306,
+      "calibration_bins": [
+        {
+          "lower": 0.3,
+          "count": 42,
+          "confidence": 0.3707686708088317,
+          "accuracy": 0.42857142857142855
+        },
+        {
+          "lower": 0.4,
+          "count": 108,
+          "confidence": 0.45869842327423455,
+          "accuracy": 0.5185185185185185
+        },
+        {
+          "lower": 0.5,
+          "count": 10,
+          "confidence": 0.5088633732534836,
+          "accuracy": 0.6
+        }
+      ],
+      "confusion_matrix": [
+        [
+          40,
+          0,
+          17
+        ],
+        [
+          23,
+          0,
+          23
+        ],
+        [
+          17,
+          0,
+          40
+        ]
+      ],
+      "per_class": {
+        "loss": {
+          "precision": 0.5,
+          "recall": 0.7017543859649122,
+          "f1": 0.583941605839416,
+          "support": 57
+        },
+        "draw": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 46
+        },
+        "win": {
+          "precision": 0.5,
+          "recall": 0.7017543859649122,
+          "f1": 0.583941605839416,
+          "support": 57
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,929 @@
+{
+  "source_rows": 3866,
+  "accepted_matches": 1859,
+  "rejected_groups": 60,
+  "rejected": [
+    {
+      "date": "2018-03-21",
+      "teams": [
+        "Antigua",
+        "Bermuda"
+      ],
+      "lines": [
+        2086,
+        2087
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2018-03-22",
+      "teams": [
+        "Dominican Rep.do",
+        "Turks & Caicos"
+      ],
+      "lines": [
+        2102,
+        2103
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2018-03-25",
+      "teams": [
+        "Dominican Rep.do",
+        "St. Kitts & Nevis"
+      ],
+      "lines": [
+        2208,
+        2209
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2018-04-17",
+      "teams": [
+        "Panama",
+        "Trin & Tobago"
+      ],
+      "lines": [
+        2306,
+        2307
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2018-04-26",
+      "teams": [
+        "Jamaica",
+        "St. Kitts & Nevis"
+      ],
+      "lines": [
+        2310,
+        2311
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2018-04-29",
+      "teams": [
+        "Antigua",
+        "Jamaica"
+      ],
+      "lines": [
+        2312,
+        2313
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2018-05-30",
+      "teams": [
+        "CAR",
+        "Uganda"
+      ],
+      "lines": [
+        2372,
+        2373
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2018-06-02",
+      "teams": [
+        "Rep. of Ireland",
+        "United States"
+      ],
+      "lines": [
+        2406,
+        2407
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2018-06-14",
+      "teams": [
+        "Russia",
+        "Saudi Arabia"
+      ],
+      "lines": [
+        2,
+        3,
+        12,
+        13,
+        30,
+        31
+      ],
+      "reason": "expected exactly two reciprocal team perspectives"
+    },
+    {
+      "date": "2018-06-15",
+      "teams": [
+        "Egypt",
+        "Uruguay"
+      ],
+      "lines": [
+        4,
+        5,
+        14,
+        15,
+        32,
+        33
+      ],
+      "reason": "expected exactly two reciprocal team perspectives"
+    },
+    {
+      "date": "2018-06-15",
+      "teams": [
+        "IR Iran",
+        "Morocco"
+      ],
+      "lines": [
+        6,
+        7,
+        16,
+        17,
+        34,
+        35
+      ],
+      "reason": "expected exactly two reciprocal team perspectives"
+    },
+    {
+      "date": "2018-06-15",
+      "teams": [
+        "Portugal",
+        "Spain"
+      ],
+      "lines": [
+        8,
+        9,
+        18,
+        19,
+        36,
+        37
+      ],
+      "reason": "expected exactly two reciprocal team perspectives"
+    },
+    {
+      "date": "2018-06-16",
+      "teams": [
+        "Argentina",
+        "Iceland"
+      ],
+      "lines": [
+        22,
+        23,
+        40,
+        41
+      ],
+      "reason": "expected exactly two reciprocal team perspectives"
+    },
+    {
+      "date": "2018-06-16",
+      "teams": [
+        "Australia",
+        "France"
+      ],
+      "lines": [
+        10,
+        11,
+        20,
+        21,
+        38,
+        39
+      ],
+      "reason": "expected exactly two reciprocal team perspectives"
+    },
+    {
+      "date": "2018-06-16",
+      "teams": [
+        "Croatia",
+        "Niger"
+      ],
+      "lines": [
+        26,
+        27,
+        44,
+        45
+      ],
+      "reason": "expected exactly two reciprocal team perspectives"
+    },
+    {
+      "date": "2018-06-16",
+      "teams": [
+        "Denmark",
+        "Peru"
+      ],
+      "lines": [
+        24,
+        25,
+        42,
+        43
+      ],
+      "reason": "expected exactly two reciprocal team perspectives"
+    },
+    {
+      "date": "2018-06-17",
+      "teams": [
+        "Costa Rica",
+        "Serbia"
+      ],
+      "lines": [
+        28,
+        29,
+        46,
+        47
+      ],
+      "reason": "expected exactly two reciprocal team perspectives"
+    },
+    {
+      "date": "2018-09-06",
+      "teams": [
+        "Trin & Tobago",
+        "UAE"
+      ],
+      "lines": [
+        2536,
+        2537
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2018-09-11",
+      "teams": [
+        "Laos",
+        "UAE"
+      ],
+      "lines": [
+        2594,
+        2595
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2018-10-16",
+      "teams": [
+        "UAE",
+        "Venezuela"
+      ],
+      "lines": [
+        2688,
+        2689
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2018-11-20",
+      "teams": [
+        "UAE",
+        "Yemen"
+      ],
+      "lines": [
+        2780,
+        2781
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-03-21",
+      "teams": [
+        "Latvia",
+        "N. Macedonia"
+      ],
+      "lines": [
+        1544,
+        1545
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-03-21",
+      "teams": [
+        "Saudi Arabia",
+        "UAE"
+      ],
+      "lines": [
+        2886,
+        2887
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-03-23",
+      "teams": [
+        "Armenia",
+        "Bosnia-Herzegovina"
+      ],
+      "lines": [
+        1576,
+        1577
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-03-26",
+      "teams": [
+        "Georgia",
+        "Rep. of Ireland"
+      ],
+      "lines": [
+        1614,
+        1615
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-06-07",
+      "teams": [
+        "N. Macedonia",
+        "Poland"
+      ],
+      "lines": [
+        1640,
+        1641
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-06-10",
+      "teams": [
+        "Austria",
+        "N. Macedonia"
+      ],
+      "lines": [
+        1684,
+        1685
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-06-10",
+      "teams": [
+        "Gibraltar",
+        "Rep. of Ireland"
+      ],
+      "lines": [
+        1680,
+        1681
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-06-11",
+      "teams": [
+        "Kyrgyz Republic",
+        "Palestine"
+      ],
+      "lines": [
+        3062,
+        3063
+      ],
+      "reason": "missing/invalid result or score"
+    },
+    {
+      "date": "2019-08-11",
+      "teams": [
+        "St. Vincent",
+        "Trin & Tobago"
+      ],
+      "lines": [
+        3096,
+        3097
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-08-31",
+      "teams": [
+        "Sri Lanka",
+        "UAE"
+      ],
+      "lines": [
+        3104,
+        3105
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-09-05",
+      "teams": [
+        "Bosnia-Herzegovina",
+        "Liechtenstein"
+      ],
+      "lines": [
+        1738,
+        1739
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-09-10",
+      "teams": [
+        "Bulgaria",
+        "Rep. of Ireland"
+      ],
+      "lines": [
+        3154,
+        3155
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-10-10",
+      "teams": [
+        "N. Macedonia",
+        "Slovenia"
+      ],
+      "lines": [
+        1844,
+        1845
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-10-12",
+      "teams": [
+        "Bosnia-Herzegovina",
+        "Finland"
+      ],
+      "lines": [
+        1868,
+        1869
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-11-10",
+      "teams": [
+        "Anguilla",
+        "Trin & Tobago"
+      ],
+      "lines": [
+        3278,
+        3279
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-11-14",
+      "teams": [
+        "New Zealand",
+        "Rep. of Ireland"
+      ],
+      "lines": [
+        3290,
+        3291
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-11-15",
+      "teams": [
+        "Bosnia-Herzegovina",
+        "Italy"
+      ],
+      "lines": [
+        1954,
+        1955
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2019-11-19",
+      "teams": [
+        "Israel",
+        "N. Macedonia"
+      ],
+      "lines": [
+        2026,
+        2027
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2020-10-08",
+      "teams": [
+        "Kosovo",
+        "N. Macedonia"
+      ],
+      "lines": [
+        2036,
+        2037
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2020-10-12",
+      "teams": [
+        "UAE",
+        "Uzbekistan"
+      ],
+      "lines": [
+        3434,
+        3435
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2020-11-12",
+      "teams": [
+        "Bosnia-Herzegovina",
+        "IR Iran"
+      ],
+      "lines": [
+        3490,
+        3491
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2020-11-12",
+      "teams": [
+        "Tajikistan",
+        "UAE"
+      ],
+      "lines": [
+        3494,
+        3495
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2020-11-16",
+      "teams": [
+        "Bahrain",
+        "UAE"
+      ],
+      "lines": [
+        3518,
+        3519
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2021-01-19",
+      "teams": [
+        "Dominican Rep.do",
+        "Puerto Rico"
+      ],
+      "lines": [
+        3540,
+        3541
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2022-01-12",
+      "teams": [
+        "C\u00f4te d'Ivoire",
+        "Equ. Guinea"
+      ],
+      "lines": [
+        866,
+        867
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2023-03-23",
+      "teams": [
+        "Bosnia-Herzegovina",
+        "Iceland"
+      ],
+      "lines": [
+        1064,
+        1065
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2023-03-23",
+      "teams": [
+        "Malta",
+        "N. Macedonia"
+      ],
+      "lines": [
+        1054,
+        1055
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2023-03-27",
+      "teams": [
+        "France",
+        "Rep. of Ireland"
+      ],
+      "lines": [
+        1114,
+        1115
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2023-06-16",
+      "teams": [
+        "N. Macedonia",
+        "Ukraine"
+      ],
+      "lines": [
+        1152,
+        1153
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2023-06-19",
+      "teams": [
+        "Gibraltar",
+        "Rep. of Ireland"
+      ],
+      "lines": [
+        1194,
+        1195
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2023-06-20",
+      "teams": [
+        "Bosnia-Herzegovina",
+        "Luxembourg"
+      ],
+      "lines": [
+        1228,
+        1229
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2023-09-08",
+      "teams": [
+        "Bosnia-Herzegovina",
+        "Liechtenstein"
+      ],
+      "lines": [
+        1262,
+        1263
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2023-09-10",
+      "teams": [
+        "Netherlands",
+        "Rep. of Ireland"
+      ],
+      "lines": [
+        1290,
+        1291
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2023-10-13",
+      "teams": [
+        "Greece",
+        "Rep. of Ireland"
+      ],
+      "lines": [
+        1350,
+        1351
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2023-10-16",
+      "teams": [
+        "Bosnia-Herzegovina",
+        "Portugal"
+      ],
+      "lines": [
+        1398,
+        1399
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2023-11-19",
+      "teams": [
+        "Bosnia-Herzegovina",
+        "Slovakia"
+      ],
+      "lines": [
+        1482,
+        1483
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2024-01-18",
+      "teams": [
+        "Equ. Guinea",
+        "Guinea-Bissau"
+      ],
+      "lines": [
+        972,
+        973
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2024-01-22",
+      "teams": [
+        "C\u00f4te d'Ivoire",
+        "Equ. Guinea"
+      ],
+      "lines": [
+        998,
+        999
+      ],
+      "reason": "opponent records disagree on match score"
+    },
+    {
+      "date": "2024-03-21",
+      "teams": [
+        "Bosnia-Herzegovina",
+        "Ukraine"
+      ],
+      "lines": [
+        1514,
+        1515
+      ],
+      "reason": "opponent records disagree on match score"
+    }
+  ],
+  "name_changes": {
+    "Afghanistanaf": "Afghanistan",
+    "Albaniaal": "Albania",
+    "Algeriadz": "Algeria",
+    "Andorraad": "Andorra",
+    "Angolaao": "Angola",
+    "Antiguaag": "Antigua",
+    "Argentinaar": "Argentina",
+    "Armeniaam": "Armenia",
+    "Australiaau": "Australia",
+    "Austriaat": "Austria",
+    "Azerbaijanaz": "Azerbaijan",
+    "Bahrainbh": "Bahrain",
+    "Bangladeshbd": "Bangladesh",
+    "Barbadosbb": "Barbados",
+    "Belarusby": "Belarus",
+    "Belgiumbe": "Belgium",
+    "Belizebz": "Belize",
+    "Beninbj": "Benin",
+    "Bermudabm": "Bermuda",
+    "Boliviabo": "Bolivia",
+    "Bosnia-Herzegovinaba": "Bosnia-Herzegovina",
+    "Botswanabw": "Botswana",
+    "Brazilbr": "Brazil",
+    "Bulgariabg": "Bulgaria",
+    "Burkina Fasobf": "Burkina Faso",
+    "Burundibi": "Burundi",
+    "CARcf": "CAR",
+    "Camerooncm": "Cameroon",
+    "Canadaca": "Canada",
+    "Cape Verdecv": "Cape Verde",
+    "Chadtd": "Chad",
+    "Chilecl": "Chile",
+    "China PRcn": "China PR",
+    "Chinese Taipeitw": "Chinese Taipei",
+    "Colombiaco": "Colombia",
+    "Comoroskm": "Comoros",
+    "Congo DRcd": "Congo DR",
+    "Costa Ricacr": "Costa Rica",
+    "Croatiahr": "Croatia",
+    "Cubacu": "Cuba",
+    "Cypruscy": "Cyprus",
+    "Czechiacz": "Czechia",
+    "C\u00f4te d'Ivoireci": "C\u00f4te d'Ivoire",
+    "Denmarkdk": "Denmark",
+    "Ecuadorec": "Ecuador",
+    "Egypteg": "Egypt",
+    "El Salvadorsv": "El Salvador",
+    "Englandeng": "England",
+    "Equ. Guineagq": "Equ. Guinea",
+    "Estoniaee": "Estonia",
+    "Ethiopiaet": "Ethiopia",
+    "Faroe Islandsfo": "Faroe Islands",
+    "Fijifj": "Fiji",
+    "Finlandfi": "Finland",
+    "Francefr": "France",
+    "Gabonga": "Gabon",
+    "Gambiagm": "Gambia",
+    "Georgiage": "Georgia",
+    "Germanyde": "Germany",
+    "Ghanagh": "Ghana",
+    "Gibraltargi": "Gibraltar",
+    "Greecegr": "Greece",
+    "Guatemalagt": "Guatemala",
+    "Guinea-Bissaugw": "Guinea-Bissau",
+    "Guineagn": "Guinea",
+    "Hondurashn": "Honduras",
+    "Hong Konghk": "Hong Kong",
+    "Hungaryhu": "Hungary",
+    "IR Iranir": "IR Iran",
+    "Icelandis": "Iceland",
+    "Indiain": "India",
+    "Indonesiaid": "Indonesia",
+    "Iraqiq": "Iraq",
+    "Israelil": "Israel",
+    "Italyit": "Italy",
+    "Jamaicajm": "Jamaica",
+    "Japanjp": "Japan",
+    "Jordanjo": "Jordan",
+    "Kazakhstankz": "Kazakhstan",
+    "Kenyake": "Kenya",
+    "Korea Republickr": "Korea Republic",
+    "Kosovoxk": "Kosovo",
+    "Kuwaitkw": "Kuwait",
+    "Kyrgyz Republickg": "Kyrgyz Republic",
+    "Laosla": "Laos",
+    "Latvialv": "Latvia",
+    "Lebanonlb": "Lebanon",
+    "Lesothols": "Lesotho",
+    "Liberialr": "Liberia",
+    "Libyaly": "Libya",
+    "Liechtensteinli": "Liechtenstein",
+    "Lithuanialt": "Lithuania",
+    "Luxembourglu": "Luxembourg",
+    "Madagascarmg": "Madagascar",
+    "Malawimw": "Malawi",
+    "Malaysiamy": "Malaysia",
+    "Maliml": "Mali",
+    "Maltamt": "Malta",
+    "Mauritaniamr": "Mauritania",
+    "Mexicomx": "Mexico",
+    "Moldovamd": "Moldova",
+    "Mongoliamn": "Mongolia",
+    "Montenegrome": "Montenegro",
+    "Moroccoma": "Morocco",
+    "Mozambiquemz": "Mozambique",
+    "Myanmarmm": "Myanmar",
+    "N. Macedoniamk": "N. Macedonia",
+    "Namibiana": "Namibia",
+    "Netherlandsnl": "Netherlands",
+    "New Caledonianc": "New Caledonia",
+    "Nicaraguani": "Nicaragua",
+    "Nigeria": "Niger",
+    "Nigeriang": "Nigeria",
+    "Nigerne": "Niger",
+    "Northern Irelandnir": "Northern Ireland",
+    "Norwayno": "Norway",
+    "Omanom": "Oman",
+    "Palestineps": "Palestine",
+    "Panamapa": "Panama",
+    "Paraguaypy": "Paraguay",
+    "Perupe": "Peru",
+    "Philippinesph": "Philippines",
+    "Polandpl": "Poland",
+    "Portugalpt": "Portugal",
+    "Qatarqa": "Qatar",
+    "Rep. of Irelandie": "Rep. of Ireland",
+    "Romaniaro": "Romania",
+    "Russiaru": "Russia",
+    "Rwandarw": "Rwanda",
+    "San Marinosm": "San Marino",
+    "Saudi Arabiasa": "Saudi Arabia",
+    "Scotlandsct": "Scotland",
+    "Senegalsn": "Senegal",
+    "Serbiars": "Serbia",
+    "Sierra Leonesl": "Sierra Leone",
+    "Singaporesg": "Singapore",
+    "Slovakiask": "Slovakia",
+    "Sloveniasi": "Slovenia",
+    "Solomon Islandssb": "Solomon Islands",
+    "South Africaza": "South Africa",
+    "Spaines": "Spain",
+    "Sri Lankalk": "Sri Lanka",
+    "St. Kitts & Neviskn": "St. Kitts & Nevis",
+    "St. Vincentvc": "St. Vincent",
+    "Sudansd": "Sudan",
+    "Swedense": "Sweden",
+    "Switzerlandch": "Switzerland",
+    "Syriasy": "Syria",
+    "Tahitipf": "Tahiti",
+    "Tajikistantj": "Tajikistan",
+    "Tanzaniatz": "Tanzania",
+    "Thailandth": "Thailand",
+    "Togotg": "Togo",
+    "Trin & Tobagott": "Trin & Tobago",
+    "Tunisiatn": "Tunisia",
+    "T\u00fcrkiyetr": "T\u00fcrkiye",
+    "UAEae": "UAE",
+    "Ugandaug": "Uganda",
+    "Ukraineua": "Ukraine",
+    "United Statesus": "United States",
+    "Uruguayuy": "Uruguay",
+    "Uzbekistanuz": "Uzbekistan",
+    "Vanuatuvu": "Vanuatu",
+    "Venezuelave": "Venezuela",
+    "Waleswls": "Wales",
+    "Zambiazm": "Zambia",
+    "Zimbabwezw": "Zimbabwe",
+    "auAustralia": "Australia",
+    "esSpain": "Spain",
+    "irIR Iran": "IR Iran",
+    "saSaudi Arabia": "Saudi Arabia",
+    "uyUruguay": "Uruguay"
+  }
+}

@@ -4,7 +4,10 @@ pub const DEFAULT_ELO: f64 = 1500.0;
 
 pub const GROUPS: &[(&str, [&str; 4])] = &[
     ("A", ["Mexico", "South Africa", "Korea Republic", "Czechia"]),
-    ("B", ["Canada", "Bosnia-Herzegovina", "Qatar", "Switzerland"]),
+    (
+        "B",
+        ["Canada", "Bosnia-Herzegovina", "Qatar", "Switzerland"],
+    ),
     ("C", ["Brazil", "Morocco", "Haiti", "Scotland"]),
     ("D", ["United States", "Paraguay", "Australia", "Türkiye"]),
     ("E", ["Germany", "Curaçao", "Côte d'Ivoire", "Ecuador"]),

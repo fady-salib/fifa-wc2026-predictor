@@ -19,6 +19,7 @@ OPTIONS:
     --sims N            number of simulated tournaments        [default: 10000]
     --seed N            RNG seed                               [default: 42]
     --top N             rows to print                          [default: 15]
+    --counts FILE       write unrounded per-team stage counts as CSV
     --probs FILE        wc2026_prob_matrix.csv exported by the notebook
                         (default: Elo-only probabilities)
     --event SPEC        team event, repeatable (see below)
@@ -42,10 +43,19 @@ struct Args {
     probs: Option<String>,
     events: Vec<String>,
     elos: Vec<String>,
+    counts: Option<String>,
 }
 
 fn parse_args() -> Result<Args, String> {
-    let mut a = Args { sims: 10_000, seed: 42, top: 15, probs: None, events: vec![], elos: vec![] };
+    let mut a = Args {
+        sims: 10_000,
+        seed: 42,
+        top: 15,
+        probs: None,
+        events: vec![],
+        elos: vec![],
+        counts: None,
+    };
     let mut it = std::env::args().skip(1);
     while let Some(flag) = it.next() {
         if flag == "-h" || flag == "--help" {
@@ -54,10 +64,23 @@ fn parse_args() -> Result<Args, String> {
         }
         let mut value = || it.next().ok_or_else(|| format!("{flag} needs a value"));
         match flag.as_str() {
-            "--sims" => a.sims = value()?.parse().map_err(|_| "--sims must be a whole number")?,
-            "--seed" => a.seed = value()?.parse().map_err(|_| "--seed must be a whole number")?,
-            "--top" => a.top = value()?.parse().map_err(|_| "--top must be a whole number")?,
+            "--sims" => {
+                a.sims = value()?
+                    .parse()
+                    .map_err(|_| "--sims must be a whole number")?
+            }
+            "--seed" => {
+                a.seed = value()?
+                    .parse()
+                    .map_err(|_| "--seed must be a whole number")?
+            }
+            "--top" => {
+                a.top = value()?
+                    .parse()
+                    .map_err(|_| "--top must be a whole number")?
+            }
             "--probs" => a.probs = Some(value()?),
+            "--counts" => a.counts = Some(value()?),
             "--event" => a.events.push(value()?),
             "--elo" => a.elos.push(value()?),
             other => return Err(format!("unknown option '{other}' (try --help)")),
@@ -71,6 +94,7 @@ fn parse_args() -> Result<Args, String> {
 
 fn run() -> Result<(), String> {
     let args = parse_args()?;
+    eprintln!("Toy tournament: simplified group tiebreaks and Round-of-32 mapping, not official FIFA bracket odds.");
     let mut model = Model::new();
 
     if let Some(path) = &args.probs {
@@ -80,9 +104,14 @@ fn run() -> Result<(), String> {
         println!("No --probs file given: using Elo-only probabilities (export the notebook's ML matrix for the full model).");
     }
     for spec in &args.elos {
-        let (team, rating) = spec.split_once('=').ok_or_else(|| format!("bad --elo '{spec}', expected TEAM=RATING"))?;
-        let rating: f64 = rating.trim().parse().map_err(|_| format!("bad Elo rating in '{spec}'"))?;
-        model.set_elo(team.trim(), rating);
+        let (team, rating) = spec
+            .split_once('=')
+            .ok_or_else(|| format!("bad --elo '{spec}', expected TEAM=RATING"))?;
+        let rating: f64 = rating
+            .trim()
+            .parse()
+            .map_err(|_| format!("bad Elo rating in '{spec}'"))?;
+        model.set_elo(team.trim(), rating)?;
     }
 
     // Resolve team names case-insensitively so `shock:france:-100` works.
@@ -92,7 +121,10 @@ fn run() -> Result<(), String> {
         if let Some(c) = model.canonical_name(&ev.team) {
             ev.team = c;
         }
-        if let Kind::Withdraw { replacement: Some(r) } = &mut ev.kind {
+        if let Kind::Withdraw {
+            replacement: Some(r),
+        } = &mut ev.kind
+        {
             if let Some(c) = model.canonical_name(r) {
                 *r = c;
             }
@@ -104,6 +136,17 @@ fn run() -> Result<(), String> {
     let scenario = Scenario::new(&model, &events)?;
     let base_counts = baseline.run(args.sims, args.seed);
     let counts = scenario.run(args.sims, args.seed);
+    if let Some(path) = &args.counts {
+        let mut text = format!("team,{}\n", STAGES.join(","));
+        for (team, row) in scenario.teams.iter().zip(&counts) {
+            text.push_str(&format!(
+                "{},{}\n",
+                team,
+                row.iter().map(u32::to_string).collect::<Vec<_>>().join(",")
+            ));
+        }
+        std::fs::write(path, text).map_err(|e| format!("cannot write counts: {e}"))?;
+    }
 
     let base_champ: std::collections::HashMap<&str, f64> = baseline
         .teams
@@ -114,11 +157,22 @@ fn run() -> Result<(), String> {
 
     let mut order: Vec<usize> = (0..scenario.teams.len()).collect();
     order.sort_by(|&a, &b| {
-        counts[b][5].cmp(&counts[a][5]).then(counts[b][4].cmp(&counts[a][4])).then(counts[b][3].cmp(&counts[a][3]))
+        counts[b][5]
+            .cmp(&counts[a][5])
+            .then(counts[b][4].cmp(&counts[a][4]))
+            .then(counts[b][3].cmp(&counts[a][3]))
     });
 
-    println!("\n{} simulations, seed {}{}", args.sims, args.seed,
-        if events.is_empty() { String::new() } else { format!(", {} event(s) applied", events.len()) });
+    println!(
+        "\n{} simulations, seed {}{}",
+        args.sims,
+        args.seed,
+        if events.is_empty() {
+            String::new()
+        } else {
+            format!(", {} event(s) applied", events.len())
+        }
+    );
     print!("{:<22}", "Team");
     for s in STAGES.iter().rev() {
         print!("{:>10}", format!("{s}%"));

@@ -1,64 +1,215 @@
-# FIFA World Cup 2026 — Prediction Model
+# Football Outcome Modeling and World Cup 2026 Toy Simulation
 
-A 4-layer stacked ensemble (XGBoost / RF / ExtraTrees / LightGBM / MLP → LR + LightGBM → MLP blender → sigmoid
-calibration, blended 70/30 with a competitive-match specialist) that predicts every match of the 48-team
-World Cup, simulates the tournament, and answers **"what if something happens to a team?"**
+A research-methodology project by Fady Salib (original project period:
+**June–July 2026**, owner-provided). It now separates **chronological historical
+evaluation** from a **simplified tournament experiment**, with reproducible
+Python/Rust simulation and team-event scenarios.
 
+The original XGBoost/Random Forest/ExtraTrees/LightGBM/MLP four-layer notebook is
+preserved in [the legacy archive](notebooks/legacy/FIFA_World_Cup_2026_leaky.ipynb).
+It has known leakage and is not the default evaluation. The revised notebook
+uses tested modules and a smaller, auditable held-out stack. No accuracy
+improvement is assumed or claimed.
+
+## Problem and architecture
+
+The project asks whether historical match information supports useful outcome
+probabilities, how stacking/calibration compare to simpler baselines, and how
+event assumptions affect a tournament simulation. It is a retrospective software
+experiment, not a validated World Cup forecast or betting recommendation.
+
+```mermaid
+flowchart LR
+    CSV[Original match CSV] --> Check[Validate reciprocal scores and labels]
+    Check --> Quarantine[Quarantine contradictions / ambiguous duplicates]
+    Check --> History[Strictly earlier-date history]
+    History --> Base[Base training before 2023]
+    Base --> Meta[Held-out stacking in 2023]
+    Meta --> Cal[Held-out sigmoid calibration in 2024]
+    Cal --> Test[Untouched 2025 to Mar 2026 test]
+    Cal --> Matrix[Symmetric pair probability export]
+    Matrix --> Python[Python toy simulator]
+    Matrix --> Rust[Rust toy simulator]
+    Events[Withdraw / replace / Elo shock] --> Python
+    Events --> Rust
 ```
-├── FIFA_World_Cup_2026.ipynb   # training, prediction, Monte Carlo, what-if scenarios
-├── data/                       # put the training CSV here (see data/README.md)
-└── rust/                       # dependency-free Rust port of the simulator + team events
-```
 
-## Python notebook
+## Actual implementation
+
+- Reciprocal-record validation and evidence-based country-name cleanup; no
+  silent guessing of contradictory match outcomes.
+- Five pre-date features: reconstructed Elo difference, last-five form and goal
+  balance differences, capped rest-day difference, and centered last-five H2H.
+- Logistic regression, Elo-only, Random Forest and ExtraTrees comparisons;
+  held-out logistic meta-model; held-out one-vs-rest sigmoid calibration with
+  normalized probabilities. Model inference averages reversed perspectives to
+  enforce complementary loss/win probabilities.
+- Log loss, summed multiclass Brier score, accuracy, class-specific precision/
+  recall/F1/support, confusion matrices, top-label calibration bins and ECE.
+- Seeded SplitMix64/Poisson toy simulations in Python and dependency-free Rust;
+  normalized matrix validation, event checks and exact stage-count comparison.
+
+No current FIFA rankings, scraped Elo/xG, actual-match statistics or post-match
+squad/age values enter the reviewed historical feature pipeline. The simulator's
+static Elo/groups are separate, unverified scenario inputs.
+
+## Setup
+
+Tested with Python **3.12**, NumPy **2.2.6**, pandas **2.3.3**, SciPy **1.16.3**,
+scikit-learn **1.6.1**, and Rust **1.85.1**. CPU-only; no hardware is required.
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
+git clone https://github.com/fady-salib/fifa-wc2026-predictor.git
+cd fifa-wc2026-predictor
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
+python -m wc2026.evaluate --out outputs/review
 jupyter lab FIFA_World_Cup_2026.ipynb
 ```
 
-### Team events
+The CLI is the reproducible entry point; the notebook calls the same modules.
+`requirements-legacy.txt` is optional archaeology support, not needed for the
+reviewed pipeline. The original notebook is archived because of methodological
+defects, not removed or represented as a valid independent evaluation.
 
-```python
-EVENTS = [
-    TeamEvent('elo_shock', 'France', delta=-100),                    # star player injured
-    TeamEvent('withdraw',  'Iraq', replacement='Italy'),             # swapped for another team
-    TeamEvent('withdraw',  'Brazil', knockout_only=True),            # pulls out before the R32
-]
-compare_scenarios(EVENTS, sims=1000)   # baseline vs scenario, same seed
-```
+## Data and evaluation protocol
 
-| Event | Effect |
-|-------|--------|
-| `elo_shock` (± delta) | Team's strength shifts by `delta` Elo points; P(draw) stays fixed. |
-| `withdraw` | Team forfeits every match (3–0 walkovers, so it always finishes last in its group); in the knockouts its opponent advances. |
-| `withdraw` + `replacement` | Another team takes the slot before the group stage. |
-| `knockout_only=True` | Event only applies from the Round of 32. |
+The CSV is **committed**: 3,866 team-perspective rows. Historical Elo and xG
+columns are entirely missing. Some mirror records assign the same non-draw
+outcome/score to both opponents; some groups contain ambiguous duplicates.
+Validation retains **1,859 unique matches** and quarantines **60 groups**.
+[Data audit](docs/data-audit.json) records source line numbers/reasons; the raw
+file is unchanged. Accepted records still need external verification.
 
-Events adjust the trained model's probabilities after the fact — no retraining.
+| Purpose | Period in retained data | Matches / perspective rows |
+|---|---|---:|
+| Base fitting | 2018-01-11–2022-12-18 | 1,309 / 2,618 |
+| Held-out stack fitting | 2023-01-25–2023-11-21 | 274 / 548 |
+| Sigmoid calibration | 2024-01-13–2024-11-19 | 196 / 392 |
+| Final test | 2025-01-18–2026-03-31 | 80 / 160 |
 
-## Rust
+The stack sees predictions on a later block not used to fit its base models;
+calibrators see a still later block, not training predictions. The test block
+fits neither estimators nor calibrators. All matches on a date receive features
+before any same-day result updates. Mirror rows stay in the same date/split.
+During test evaluation, prior test-date results update history for subsequent
+dates: this is **rolling one-step-ahead evaluation**, not a single frozen forecast
+for the entire multi-year test. No observations on/after 2026-06-11 enter history.
+
+## Results actually measured
+
+The following came from an executed run on **2026-10-29**, seed 42. No parameters
+were tuned against these test results. The small test contains **80 matches**;
+its 160 mirrored rows are correlated, not 160 independent matches.
+
+| Model | Test log loss ↓ | Brier sum ↓ | Accuracy |
+|---|---:|---:|---:|
+| Reconstructed Elo-only heuristic | 1.0302 | 0.6156 | 0.5375 |
+| Logistic regression | 1.0570 | 0.6318 | 0.4875 |
+| Random Forest | 1.1363 | 0.6851 | 0.5062 |
+| ExtraTrees | 1.0622 | 0.6418 | 0.5000 |
+| Held-out stack | 1.0692 | 0.6442 | 0.5000 |
+| Sigmoid-calibrated stack | 1.0374 | 0.6252 | 0.5000 |
+
+**Elo-only performed better than the calibrated stack on log loss and Brier here.**
+These numbers are not evidence that the models generalize to World Cup 2026.
+The full [evaluation artifact](docs/evaluation.json) includes class performance,
+imbalance counts, confusion matrices and reliability bins. Brier is the mean
+sum of squared errors over three classes (range 0–2), not divided by class count.
+Raw data provenance, quarantining and sparse histories limit all conclusions.
+
+## Simulation and event usage
 
 ```bash
-cd rust
-cargo test
-cargo run --release -- --sims 20000 --event shock:France:-100 --event withdraw:Iraq=Italy --elo "Italy=1880"
+python -m wc2026.simulation --sims 1000 --seed 42
+cargo test --manifest-path rust/Cargo.toml --locked
+cargo run --manifest-path rust/Cargo.toml --release -- --sims 2000 --event shock:France:-100
 ```
 
-By default the Rust version uses Elo-only probabilities. To use the full ML ensemble, run the last notebook
-cell (writes `wc2026_prob_matrix.csv`) and pass `--probs ../wc2026_prob_matrix.csv`. Run `cargo run -- --help`
-for all options. The ML training itself stays in Python; Rust handles the simulation.
+The default simulation uses the **unverified static Elo snapshot**, not the
+trained stack. To use held-out ML probabilities at the declared 2026-06-11
+scenario date:
 
-## What changed from V11
+```bash
+python -m wc2026.export
+cargo run --manifest-path rust/Cargo.toml -- --sims 200 --probs wc2026_prob_matrix.csv
+python -m wc2026.simulation --sims 200 --probs wc2026_prob_matrix.csv
+```
 
-- Monte Carlo: the four "250-run" cells each reset the counters, so only 250 runs were reported. Now one cell, 1,000 runs, and model predictions are cached (each pair is predicted once, not thousands of times).
-- Monte Carlo third-place teams were ranked by Elo; now by points / GD / GF like the main bracket. Goal difference now uses real goals.
-- Removed `%pip install`, a duplicate import, the deprecated `use_label_encoder`, the unused `WorldCupMatches.csv` load, and literal `\n` printing in several `print` calls. Broken title cell fixed. Outputs cleared.
+```python
+from wc2026.simulation import Model, Scenario, TeamEvent
+model = Model()
+model.elo['Italy'] = 1900  # explicit hypothetical input, not a fetched rating
+events = [TeamEvent('withdraw', 'Iraq', replacement='Italy'),
+          TeamEvent('elo_shock', 'France', delta=-100)]
+counts = Scenario(model, events).run(sims=1000, seed=42)
+```
 
-## Known limitations (not changed — worth knowing)
+Withdrawal means 3–0 toy walkovers, or knockout elimination with
+`knockout_only=True`. Replacement must be an unused team with explicit Elo and
+occur before groups. At most **one unreplaced withdrawal** is supported; multiple
+vacant slots need rules and are rejected. Ordered events referencing a removed
+team fail; shocks on a replaced team are not transferred. Elo shocks tilt decisive
+win/loss odds while holding draw probability fixed, even at extreme deltas.
+They are hypothetical sensitivity inputs, not measured injury effects.
 
-- **Validation is in-sample.** The 2023–2025 validation window is inside the training set, so the reported accuracy is optimistic. A time-based holdout would fix this.
-- **Calibration is in-sample.** `FourLayerStack.fit()` does nothing, so the sigmoid calibrators see the stack's own training predictions.
-- **Elo/FIFA rank/xG are current values applied to historical matches**, which leaks present-day strength into the past.
-- Groups, Elo and FIFA ranks are hard-coded; the Round of 32 pairing is simplified rather than FIFA's official bracket.
+Same seed gives reproducible runs, not noise-free causal comparisons. Walkovers
+change random-number consumption. Monte Carlo error and model/rule uncertainty
+remain; a frequency is not an externally calibrated championship probability.
+
+## Competition-rule limitations
+
+The simulator retains 12 four-team groups, top two plus eight third-place teams,
+and 32-team elimination. **Its bracket is not the official FIFA mapping:** it
+pairs adjacent group winners/runners and third-place teams with each other.
+Ranking uses points/GD/GF then random ties, omitting the official detailed
+head-to-head, discipline and other tiebreak provisions. Third-place allocation
+tables, match-number paths and authentic extra-time/penalty dynamics are absent.
+It samples 72 group fixtures and 31 knockout fixtures, omitting the bronze match.
+The legacy notebook's label of 96 group fixtures was incorrect.
+
+Official regulation/bracket conformance was **not completed**: the FIFA format
+page returned a client-rendered shell during this review, and no verified full
+regulation/allocation table is bundled. Do not label this implementation official
+or present its output as official-bracket tournament odds. A versioned, cited
+regulation dataset and full bracket/tiebreak tests are required future work.
+
+## Tests and reproducibility
+
+```bash
+python -m unittest discover -s tests -v
+cargo fmt --manifest-path rust/Cargo.toml -- --check
+cargo clippy --manifest-path rust/Cargo.toml -- -D warnings
+cargo test --manifest-path rust/Cargo.toml --locked
+cargo build --manifest-path rust/Cargo.toml --locked
+python -m tools.compare_simulators
+python -m tools.compare_simulators --probs wc2026_prob_matrix.csv
+```
+
+The baseline's 12 Rust tests passed. Reviewed checks passed: **15 Python tests,
+18 Rust tests**, and exact unrounded Python/Rust stage-count parity for five
+scenarios × 200 tournaments using Elo, then the same five using the exported ML
+matrix. [Verification](docs/verification.md) distinguishes execution, evaluation
+and limitations. The notebook modules ran; notebook UI/chart execution is not
+claimed. GitHub workflow definitions are added, not assumed remotely passing.
+
+## Repository, media, ownership and license
+
+`wc2026/history.py`, `evaluate.py`, `export.py` and `simulation.py` contain reusable
+logic; `tools/compare_simulators.py` checks ports; `rust/src/` preserves the native
+simulator; `docs/` records audit/evidence; the legacy notebook remains archived.
+See [file-by-file findings](docs/audit.md) and [CV/LinkedIn drafts](docs/portfolio.md).
+
+No project images/video were supplied. Suggested media: a calibration comparison
+plot drawn from `docs/evaluation.json`, an annotated toy-scenario comparison and
+a CLI/notebook walkthrough. Label the rules, seed, sample count and software
+revision; keep data-quality limitations visible. No fabricated dashboard or
+performance claims are needed.
+
+Original work belongs to Fady Salib; this 2026 review used AI-assisted audit,
+methodology changes, tests and documentation. Confirm individual/team contributions
+before claiming sole authorship. Code retains its [MIT license](LICENSE).
+The committed match CSV has no verified upstream source/license record; the code
+license does not establish data redistribution rights. Resolve that provenance
+before claiming a reproducible public research dataset.

@@ -1,0 +1,8 @@
+# Optional archaeology only; the legacy notebook has known leakage.
+# Not needed for the reviewed evaluation or either simulator.
+-r requirements.txt
+xgboost
+lightgbm
+requests
+beautifulsoup4
+tqdm

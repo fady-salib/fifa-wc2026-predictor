@@ -44,6 +44,9 @@ pub fn parse_event(spec: &str) -> Result<TeamEvent, String> {
                 .trim()
                 .parse()
                 .map_err(|_| format!("bad event '{spec}': '{delta}' is not a number"))?;
+            if team.trim().is_empty() || !d.is_finite() {
+                return Err("shock requires a nonempty team and finite delta".into());
+            }
             Ok(TeamEvent {
                 team: team.trim().to_string(),
                 kind: Kind::EloShock(d),
@@ -72,7 +75,12 @@ mod tests {
 
         let e = parse_event("withdraw:Iraq=Italy").unwrap();
         assert_eq!(e.team, "Iraq");
-        assert_eq!(e.kind, Kind::Withdraw { replacement: Some("Italy".into()) });
+        assert_eq!(
+            e.kind,
+            Kind::Withdraw {
+                replacement: Some("Italy".into())
+            }
+        );
     }
 
     #[test]
@@ -80,5 +88,11 @@ mod tests {
         assert!(parse_event("explode:France").is_err());
         assert!(parse_event("shock:France:lots").is_err());
         assert!(parse_event("withdraw:").is_err());
+    }
+    #[test]
+    fn nonfinite_and_empty_shocks_are_rejected() {
+        for event in ["shock:France:NaN", "shock:France:inf", "shock::-100"] {
+            assert!(parse_event(event).is_err());
+        }
     }
 }

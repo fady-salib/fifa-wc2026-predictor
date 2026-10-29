@@ -1,0 +1,25 @@
+name: Chronological methods and simulator checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@1.85.1
+        with:
+          components: rustfmt, clippy
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -v
+      - run: python -m wc2026.evaluate
+      - run: cargo fmt --manifest-path rust/Cargo.toml -- --check
+      - run: cargo clippy --manifest-path rust/Cargo.toml -- -D warnings
+      - run: cargo test --manifest-path rust/Cargo.toml --locked
+      - run: cargo build --manifest-path rust/Cargo.toml --locked
+      - run: python -m tools.compare_simulators
+      - run: python -m wc2026.export
+      - run: python -m tools.compare_simulators --probs wc2026_prob_matrix.csv

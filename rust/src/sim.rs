@@ -10,8 +10,18 @@ use std::collections::{HashMap, HashSet};
 pub const STAGES: [&str; 6] = ["R32", "R16", "QF", "SF", "Final", "Champion"];
 
 const R32_PAIRS: [(usize, usize); 12] = [
-    (0, 1), (1, 0), (2, 3), (3, 2), (4, 5), (5, 4),
-    (6, 7), (7, 6), (8, 9), (9, 8), (10, 11), (11, 10),
+    (0, 1),
+    (1, 0),
+    (2, 3),
+    (3, 2),
+    (4, 5),
+    (5, 4),
+    (6, 7),
+    (7, 6),
+    (8, 9),
+    (9, 8),
+    (10, 11),
+    (11, 10),
 ];
 
 pub struct Scenario<'a> {
@@ -39,7 +49,11 @@ fn rank_cmp(a: &Row, b: &Row) -> std::cmp::Ordering {
         .cmp(&a.pts)
         .then(b.gd.cmp(&a.gd))
         .then(b.gf.cmp(&a.gf))
-        .then(a.tie.partial_cmp(&b.tie).unwrap_or(std::cmp::Ordering::Equal))
+        .then(
+            a.tie
+                .partial_cmp(&b.tie)
+                .unwrap_or(std::cmp::Ordering::Equal),
+        )
 }
 
 fn find(groups: &[Vec<String>], name: &str) -> Option<(usize, usize)> {
@@ -72,9 +86,14 @@ impl<'a> Scenario<'a> {
                     }
                     *shock_ko.entry(ev.team.clone()).or_insert(0.0) += *d;
                 }
-                Kind::Withdraw { replacement: Some(r) } => {
+                Kind::Withdraw {
+                    replacement: Some(r),
+                } => {
                     if ev.knockout_only {
-                        return Err("a replacement only makes sense before the group stage (drop @ko)".into());
+                        return Err(
+                            "a replacement only makes sense before the group stage (drop @ko)"
+                                .into(),
+                        );
                     }
                     if find(&groups, r).is_some() {
                         return Err(format!("replacement '{r}' is already in the tournament"));
@@ -93,9 +112,32 @@ impl<'a> Scenario<'a> {
             }
         }
 
+        if out_ko.len() > 1 {
+            return Err("toy bracket supports at most one unreplaced withdrawal; multiple withdrawals need vacancy rules".into());
+        }
+        if shock_group
+            .values()
+            .chain(shock_ko.values())
+            .any(|d| !d.is_finite())
+        {
+            return Err("combined Elo shock must be finite".into());
+        }
         let teams: Vec<String> = groups.iter().flatten().cloned().collect();
-        let index = teams.iter().enumerate().map(|(i, t)| (t.clone(), i)).collect();
-        Ok(Scenario { model, groups, teams, index, shock_group, shock_ko, out_group, out_ko })
+        let index = teams
+            .iter()
+            .enumerate()
+            .map(|(i, t)| (t.clone(), i))
+            .collect();
+        Ok(Scenario {
+            model,
+            groups,
+            teams,
+            index,
+            shock_group,
+            shock_ko,
+            out_group,
+            out_ko,
+        })
     }
 
     fn shock(map: &HashMap<String, f64>, t: &str) -> f64 {
@@ -131,13 +173,24 @@ impl<'a> Scenario<'a> {
         match (self.out_ko.contains(a), self.out_ko.contains(b)) {
             (true, false) => return b.to_string(),
             (false, true) => return a.to_string(),
-            (true, true) => return if rng.next_f64() < 0.5 { a.to_string() } else { b.to_string() },
+            (true, true) => {
+                return if rng.next_f64() < 0.5 {
+                    a.to_string()
+                } else {
+                    b.to_string()
+                }
+            }
             _ => {}
         }
         let delta = Self::shock(&self.shock_ko, a) - Self::shock(&self.shock_ko, b);
         let p = tilt(self.model.base_probs(a, b), delta);
-        let pw = p[2] + p[1] * p[2] / (p[0] + p[2] + 1e-9); // draws -> extra time / pens
-        if rng.next_f64() < pw { a.to_string() } else { b.to_string() }
+        let decisive = p[0] + p[2];
+        let pw = if decisive > 0.0 { p[2] / decisive } else { 0.5 }; // toy draw resolution
+        if rng.next_f64() < pw {
+            a.to_string()
+        } else {
+            b.to_string()
+        }
     }
 
     fn simulate_once(&self, rng: &mut Rng, counts: &mut [[u32; 6]]) {
@@ -148,7 +201,13 @@ impl<'a> Scenario<'a> {
         for grp in &self.groups {
             let mut rows: Vec<Row> = grp
                 .iter()
-                .map(|t| Row { team: t.clone(), pts: 0, gd: 0, gf: 0, tie: rng.next_f64() })
+                .map(|t| Row {
+                    team: t.clone(),
+                    pts: 0,
+                    gd: 0,
+                    gf: 0,
+                    tie: rng.next_f64(),
+                })
                 .collect();
             for i in 0..grp.len() {
                 for j in (i + 1)..grp.len() {
@@ -157,13 +216,13 @@ impl<'a> Scenario<'a> {
                     rows[j].gf += gb as i32;
                     rows[i].gd += ga as i32 - gb as i32;
                     rows[j].gd += gb as i32 - ga as i32;
-                    if ga > gb {
-                        rows[i].pts += 3;
-                    } else if gb > ga {
-                        rows[j].pts += 3;
-                    } else {
-                        rows[i].pts += 1;
-                        rows[j].pts += 1;
+                    match ga.cmp(&gb) {
+                        std::cmp::Ordering::Greater => rows[i].pts += 3,
+                        std::cmp::Ordering::Less => rows[j].pts += 3,
+                        std::cmp::Ordering::Equal => {
+                            rows[i].pts += 1;
+                            rows[j].pts += 1;
+                        }
                     }
                 }
             }
@@ -194,7 +253,10 @@ impl<'a> Scenario<'a> {
             if round.len() == 1 {
                 break;
             }
-            round = round.chunks(2).map(|c| self.knockout(&c[0], &c[1], rng)).collect();
+            round = round
+                .chunks(2)
+                .map(|c| self.knockout(&c[0], &c[1], rng))
+                .collect();
         }
     }
 
@@ -255,7 +317,7 @@ mod tests {
     #[test]
     fn replacement_takes_the_slot() {
         let mut m = Model::new();
-        m.set_elo("Italy", 1900.0);
+        m.set_elo("Italy", 1900.0).unwrap();
         let ev = parse_event("withdraw:Iraq=Italy").unwrap();
         let s = Scenario::new(&m, &[ev]).unwrap();
         assert!(s.teams.iter().any(|t| t == "Italy"));
@@ -265,7 +327,11 @@ mod tests {
     #[test]
     fn bad_events_are_rejected() {
         let m = Model::new();
-        for spec in ["shock:Narnia:-50", "withdraw:Iraq=Spain", "withdraw:Iraq=Italy"] {
+        for spec in [
+            "shock:Narnia:-50",
+            "withdraw:Iraq=Spain",
+            "withdraw:Iraq=Italy",
+        ] {
             let ev = parse_event(spec).unwrap();
             assert!(Scenario::new(&m, &[ev]).is_err(), "{spec}");
         }
@@ -279,5 +345,21 @@ mod tests {
         let (cb, ch) = (base.run(3000, 5), hit.run(3000, 5));
         let i = base.teams.iter().position(|t| t == "Argentina").unwrap();
         assert!(ch[i][5] < cb[i][5]);
+    }
+    #[test]
+    fn unsupported_multiple_withdrawals_are_rejected() {
+        let m = Model::new();
+        let events = [
+            parse_event("withdraw:Brazil").unwrap(),
+            parse_event("withdraw:France").unwrap(),
+        ];
+        assert!(Scenario::new(&m, &events).is_err());
+    }
+
+    #[test]
+    fn identical_seeds_reproduce_all_counts() {
+        let m = Model::new();
+        let s = Scenario::new(&m, &[]).unwrap();
+        assert_eq!(s.run(100, 42), s.run(100, 42));
     }
 }
